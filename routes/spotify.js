@@ -50,7 +50,7 @@ router.get('/login', (req, res, next) => {
 router.post('/getAccessToken', async function(req, res) {
   var code = req.body.code || null
   var state = req.body.state || null
-  var storedState = req.cookies ? req.cookies[stateKey] : null
+ /* var storedState = req.cookies ? req.cookies[stateKey] : null
 
   if (state === null || state !== storedState) {
     res.redirect(
@@ -60,7 +60,7 @@ router.post('/getAccessToken', async function(req, res) {
         })
     )
   } else {
-    res.clearCookie(stateKey)
+    res.clearCookie(stateKey)*/
 
     const urlParams = querystring.stringify({
       code: code,
