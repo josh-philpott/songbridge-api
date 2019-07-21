@@ -27,7 +27,7 @@ router.get('/login', (req, res, next) => {
   var state = generateRandomString(16)
   var stateKey = 'spotify_auth_state'
 
-  res.cookie(stateKey, state)
+  res.cookie(stateKey, state, { httpOnly: false })
 
   // your application requests authorization
   var scope =
@@ -50,7 +50,7 @@ router.get('/login', (req, res, next) => {
 router.post('/getAccessToken', async function(req, res) {
   var code = req.body.code || null
   var state = req.body.state || null
-  /* var storedState = req.cookies ? req.cookies[stateKey] : null
+  var storedState = req.cookies ? req.cookies[stateKey] : null
 
   if (state === null || state !== storedState) {
     res.redirect(
@@ -60,45 +60,45 @@ router.post('/getAccessToken', async function(req, res) {
         })
     )
   } else {
-    res.clearCookie(stateKey)*/
+    res.clearCookie(stateKey)
 
-  const urlParams = querystring.stringify({
-    code: code,
-    redirect_uri: redirectUri,
-    grant_type: 'authorization_code'
-  })
-
-  try {
-    const response = await axios.post(
-      'https://accounts.spotify.com/api/token',
-      urlParams,
-      {
-        headers: {
-          Authorization:
-            'Basic ' +
-            new Buffer(
-              SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET
-            ).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }
-    )
-
-    res.cookie('spotify_access_token', response.data.access_token, {
-      maxAge: response.data.expires_in * 1000
+    const urlParams = querystring.stringify({
+      code: code,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code'
     })
-    res.cookie('spotify_refresh_token', response.data.refresh_token)
-    res.send(response.data)
-  } catch (error) {
-    console.log(error)
-    res.redirect(
-      '/#' +
-        querystring.stringify({
-          error: 'invalid_token'
-        })
-    )
+
+    try {
+      const response = await axios.post(
+        'https://accounts.spotify.com/api/token',
+        urlParams,
+        {
+          headers: {
+            Authorization:
+              'Basic ' +
+              new Buffer(
+                SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET
+              ).toString('base64'),
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+      )
+
+      res.cookie('spotify_access_token', response.data.access_token, {
+        maxAge: response.data.expires_in * 1000
+      })
+      res.cookie('spotify_refresh_token', response.data.refresh_token)
+      res.send(response.data)
+    } catch (error) {
+      console.log(error)
+      res.redirect(
+        '/#' +
+          querystring.stringify({
+            error: 'invalid_token'
+          })
+      )
+    }
   }
-  //}
 })
 
 module.exports = router
