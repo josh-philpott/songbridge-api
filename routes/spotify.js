@@ -27,7 +27,7 @@ router.get('/login', (req, res, next) => {
   var state = generateRandomString(16)
   var stateKey = 'spotify_auth_state'
 
-  res.cookie(stateKey, state, { httpOnly: false })
+  res.cookie(stateKey, state, { httpOnly: false, signed: false })
 
   // your application requests authorization
   var scope =

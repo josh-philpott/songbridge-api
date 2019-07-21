@@ -15,21 +15,11 @@ const app = express()
 
 app.listen(3002)
 
-app.use(cors({ credentials: true }))
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(
-  session({
-    secret: 'thisisasecret',
-    cookie: {
-      path: '/',
-      domain: `${process.env.APP_DOMAIN}`,
-      httpOnly: false
-    }
-  })
-)
+app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api', indexRouter)
