@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(
   cors({
-    origin: '*',
+    origin: 'songbridge.netlify.com',
     credentials: true
   })
 )
