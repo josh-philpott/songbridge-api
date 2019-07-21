@@ -20,7 +20,16 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(session({ secret: 'lame' }))
+app.use(
+  session({
+    secret: 'thisisasecret',
+    cookie: {
+      path: '/',
+      domain: `${process.env.APP_DOMAIN}`,
+      httpOnly: false
+    }
+  })
+)
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api', indexRouter)
